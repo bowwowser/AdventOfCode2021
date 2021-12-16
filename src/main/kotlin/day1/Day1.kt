@@ -15,7 +15,7 @@ class Day1(
 ) : AoCDaySolution {
     override fun solution() {
         // Get measurements as List<Int>
-        val measurements = getFileLines().map { it.toInt() }.toList()
+        val measurements = getInputAsLines().map { it.toInt() }.toList()
         val part1Answer = processMeasurement(measurements)
         val part2Answer = processMeasurement(measurements, windowSize = 3)
 

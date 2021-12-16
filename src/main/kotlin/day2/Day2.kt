@@ -15,7 +15,7 @@ class Day2(
 ) : AoCDaySolution {
     override fun solution() {
         // Get measurements as List<Instruction>
-        val instructions = getFileLines()
+        val instructions = getInputAsLines()
             .map { Instruction(it.split(" ")) }
             .toList()
         val part1Answer = Part1Submarine(instructions).processInstructions()

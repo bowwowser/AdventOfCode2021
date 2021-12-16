@@ -6,7 +6,7 @@ interface AoCDaySolution {
 
     fun solution()
 
-    fun getFileLines(): Stream<String> = File(inputFilePath).bufferedReader().lines()
+    fun getInputAsLines(): Stream<String> = File(inputFilePath).bufferedReader().lines()
 }
 
 fun <T> printSolution(answers: List<T>, solutionText: (T) -> String) {
