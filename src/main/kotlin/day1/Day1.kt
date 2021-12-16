@@ -1,32 +1,38 @@
 package day1
 
-import java.io.File
+import AoCDaySolution
+import printSolution
 import kotlin.streams.toList
+import kotlin.system.measureTimeMillis
 
 fun main() {
-    val inputFile = "src/main/kotlin/day1/input.txt"
-    val fileBuffer = File(inputFile).bufferedReader()
-
-    // Get measurements as List<Int>
-    val measurements = fileBuffer.lines().map { it.toInt() }.toList()
-    val part1Answer = processMeasurement(measurements)
-    val part2Answer = processMeasurement(measurements, windowSize = 3)
-
-    listOf(part1Answer, part2Answer).forEachIndexed { index, answer ->
-        println("Answer for part ${index+1}: $answer")
-    }
+    val solutionTimeMillis = measureTimeMillis { Day1().solution() }
+    println("Both parts solved in ${solutionTimeMillis}ms")
 }
 
-fun processMeasurement(measurements: List<Int>, windowSize: Int = 1): Int {
-    var previousMeasurement = Int.MAX_VALUE
-    var measurementIncreases = 0
+class Day1(
+    override val inputFilePath: String = "src/main/kotlin/day1/input.txt"
+) : AoCDaySolution {
+    override fun solution() {
+        // Get measurements as List<Int>
+        val measurements = getFileLines().map { it.toInt() }.toList()
+        val part1Answer = processMeasurement(measurements)
+        val part2Answer = processMeasurement(measurements, windowSize = 3)
 
-    for (window in measurements.windowed(size = windowSize)) {
-        val currentMeasurement = window.sum()
-        if (previousMeasurement < currentMeasurement) {
-            measurementIncreases++
-        }
-        previousMeasurement = currentMeasurement
+        printSolution(listOf(part1Answer, part2Answer)) { it.toString() }
     }
-    return measurementIncreases
+
+    private fun processMeasurement(measurements: List<Int>, windowSize: Int = 1): Int {
+        var previousMeasurement = Int.MAX_VALUE
+        var measurementIncreases = 0
+
+        for (window in measurements.windowed(size = windowSize)) {
+            val currentMeasurement = window.sum()
+            if (previousMeasurement < currentMeasurement) {
+                measurementIncreases++
+            }
+            previousMeasurement = currentMeasurement
+        }
+        return measurementIncreases
+    }
 }
