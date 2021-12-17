@@ -2,13 +2,13 @@ package day3
 
 import AoCDaySolution
 import printSolution
-import java.io.File
-import java.io.RandomAccessFile
+import java.util.stream.Stream
+import kotlin.streams.toList
 import kotlin.system.measureTimeMillis
 
 fun main() {
     val solutionTimeMillis = measureTimeMillis { Day3().solution() }
-    println("First part solved in ${solutionTimeMillis}ms")
+    println("Both parts solved in ${solutionTimeMillis}ms")
 }
 
 class Day3(
@@ -16,34 +16,88 @@ class Day3(
 ) : AoCDaySolution {
 
     override fun solution() {
-        val inputFileRaf = RandomAccessFile(File(inputFilePath), "r")
-        val arraySize = inputFileRaf.readLine().length // get size from length of first line
-        inputFileRaf.seek(0)
-        val oneCounts = IntArray(arraySize)
-        val zeroCounts = IntArray(arraySize)
+        val part1Answer = getRatingsToCompare(getInputAsLines())
+        val part2Answer = getRatingsToCompare(getInputAsLines(), narrowChoices = true)
 
-        getInputAsLines().forEach {
-            it.forEachIndexed { index, bitChar ->
-                if (bitChar == '1') oneCounts[index]++ else zeroCounts[index]++
-            }
-        }
-
-        var gammaString = ""
-        var epsilonString = ""
-        for (i in 0 until arraySize) {
-            if (oneCounts[i] > zeroCounts[i]) {
-                gammaString += "1"
-                epsilonString += "0"
-            } else {
-                gammaString += "0"
-                epsilonString += "1"
-            }
-        }
-
-        val part1Answer = Pair(gammaString.toInt(2), epsilonString.toInt(2))
-
-        printSolution(listOf(part1Answer)) {
+        printSolution(listOf(part1Answer, part2Answer)) {
             (it.first * it.second).toString()
         }
     }
+}
+
+fun getRatingsToCompare(inputAsLines: Stream<String>, narrowChoices: Boolean = false): Pair<Int, Int> {
+    val originalDiagnostics = inputAsLines.toList()
+
+    var firstRating = ""
+    var secondRating = ""
+    if (narrowChoices) {
+        firstRating = getOxygenGeneratorRating(originalDiagnostics)
+        secondRating = getCO2ScrubberRating(originalDiagnostics)
+    } else {
+        transposeDiagnostics(originalDiagnostics.map { it.toCharArray() }).forEach { positionChars ->
+            val mostCommonBit = findMostCommonBit(positionChars)
+            val leastCommonBit = if (mostCommonBit == '0') '1' else '0'
+
+            firstRating += mostCommonBit
+            secondRating += leastCommonBit
+        }
+    }
+
+    return Pair(firstRating.toInt(2), secondRating.toInt(2))
+}
+
+fun getOxygenGeneratorRating(originalDiagnostics: List<String>): String {
+    var currentChoices = originalDiagnostics
+
+    var bitPositionToCheck = 0
+    while (currentChoices.size > 1 || bitPositionToCheck > originalDiagnostics[0].length) {
+//        println("Current choices: ${currentChoices.joinToString()}")
+        val transposedChoices = transposeDiagnostics(currentChoices.map { it.toCharArray() })
+        val mostCommonBit = findMostCommonBit(transposedChoices[bitPositionToCheck])
+
+        val newChoices = currentChoices.filter { it[bitPositionToCheck] == mostCommonBit }
+        currentChoices = newChoices
+        bitPositionToCheck++
+    }
+
+//    println("Last choice: ${currentChoices[0]}")
+    return currentChoices[0]
+}
+
+fun getCO2ScrubberRating(originalDiagnostics: List<String>): String {
+    var currentChoices = originalDiagnostics
+
+    var bitPositionToCheck = 0
+    while (currentChoices.size > 1) {
+//        println("Current choices: ${currentChoices.joinToString()}")
+        val transposedChoices = transposeDiagnostics(currentChoices.map { it.toCharArray() })
+        val mostCommonBit = findMostCommonBit(transposedChoices[bitPositionToCheck])
+
+        val newChoices = currentChoices.filter { it[bitPositionToCheck] != mostCommonBit }
+        currentChoices = newChoices
+        bitPositionToCheck++
+    }
+
+//    println("Last choice: ${currentChoices[0]}")
+    return currentChoices[0]
+}
+
+fun findMostCommonBit(positionChars: CharArray): Char {
+    val onesCount = positionChars.count { it == '1' }
+    val zeroCount = positionChars.size - onesCount
+
+    return if (onesCount >= zeroCount) '1' else '0'
+}
+
+fun transposeDiagnostics(diagInput: List<CharArray>): List<CharArray> {
+    val newRowCount = diagInput.size        // new row size = old col size
+    val newColCount = diagInput[0].size     // new col size = old row size
+
+    val transposedDiags = List(newColCount) { CharArray(newRowCount) }
+    for (col in 0 until newColCount) {
+        for (row in 0 until newRowCount) {
+            transposedDiags[col][row] = diagInput[row][col]
+        }
+    }
+    return transposedDiags
 }
