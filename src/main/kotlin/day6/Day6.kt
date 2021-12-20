@@ -32,38 +32,6 @@ class Day6(
 const val RESET_TIMER = 6
 const val FRESH_FISH_TIMER = 8
 
-data class Lanternfish(
-    var internalTimer: Int
-) { // Methods were only used for part 1, but staying here for reference
-//    fun resetInternalTimer() {
-//        internalTimer = RESET_TIMER
-//    }
-//
-//    fun spawnNewFish() = Lanternfish(FRESH_FISH_TIMER)
-}
-/**
- * Initial solution for part 1. Considered each fish individually, and summed at the end.
- */
-//fun getLanternfishCountSmall(lanternfish: List<Lanternfish>, daysToObserve: Int): Int {
-//    val currentFish = lanternfish.toMutableList()
-//    for (day in 1..daysToObserve) {
-//        val spawnedFish = mutableListOf<Lanternfish>()
-//        for (fish in currentFish) {
-//            fish.internalTimer--
-//            if (fish.internalTimer < 0) {
-//                fish.resetInternalTimer()
-//                val newFish = fish.spawnNewFish()
-//                spawnedFish.add(newFish)
-//            }
-//        }
-//        currentFish.addAll(spawnedFish)
-////            println("-- Day $day: ${currentFish.map { it.internalTimer }.joinToString()}")
-//    }
-//
-//    return currentFish.size
-//}
-//
-
 /**
  * Better solution found for part 2. Instead, considers fish with same timer value as a group,
  * and processes / maintains only those group counts.
@@ -101,3 +69,35 @@ fun getLanternfishCountLarge(lanternfish: List<Lanternfish>, daysToObserve: Int)
 
     return currentCountsByTimer.values.sum()
 }
+
+// The methods were only used for part 1, but staying here for reference
+data class Lanternfish(var internalTimer: Int)
+//{
+//    fun resetInternalTimer() {
+//        internalTimer = RESET_TIMER
+//    }
+//
+//    fun spawnNewFish() = Lanternfish(FRESH_FISH_TIMER)
+//}
+
+/**
+ * Initial solution for part 1. Considered each fish individually, and summed at the end.
+ */
+//fun getLanternfishCountSmall(lanternfish: List<Lanternfish>, daysToObserve: Int): Int {
+//    val currentFish = lanternfish.toMutableList()
+//    for (day in 1..daysToObserve) {
+//        val spawnedFish = mutableListOf<Lanternfish>()
+//        for (fish in currentFish) {
+//            fish.internalTimer--
+//            if (fish.internalTimer < 0) {
+//                fish.resetInternalTimer()
+//                val newFish = fish.spawnNewFish()
+//                spawnedFish.add(newFish)
+//            }
+//        }
+//        currentFish.addAll(spawnedFish)
+////            println("-- Day $day: ${currentFish.map { it.internalTimer }.joinToString()}")
+//    }
+//
+//    return currentFish.size
+//}
