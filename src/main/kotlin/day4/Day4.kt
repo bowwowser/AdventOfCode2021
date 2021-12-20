@@ -21,7 +21,7 @@ class Day4(
             .split(",")
             .map { it.toInt() }
             .toIntArray()
-        println("Parsed numbers ${numbers.joinToString(",")}")
+//        println("Parsed numbers ${numbers.joinToString(",")}")
         // Might need better performance vvv
         val boards = fileBuffer.lines()
             .filter { it.isNotEmpty() }
