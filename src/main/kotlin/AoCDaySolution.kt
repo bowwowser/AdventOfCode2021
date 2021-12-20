@@ -6,6 +6,8 @@ interface AoCDaySolution {
 
     fun solution()
 
+    fun getInputLine(): String = File(inputFilePath).bufferedReader().readLine()
+
     fun getInputAsLines(): Stream<String> = File(inputFilePath).bufferedReader().lines()
 }
 
